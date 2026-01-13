@@ -11,26 +11,31 @@ A command-line Rock-Paper-Scissors game where users play against the computer.
 from utils import (normalize_choice, get_computer_choice, determine_winner, get_user_choice, get_result_message)
 
 def play_round(user_score, computer_score):
+    print("\nOptions: rock / paper / scissors")
 
-    user_choice = get_user_choice()
+    while True:
+        user_input = input("User choice: ").strip().lower()
+        user_choice = normalize_choice(user_input)
+
+        if user_choice is None:
+            print("Invalid choice. Please try again.")
+            continue
+        break
+
     computer_choice = get_computer_choice()
 
-    print(f"You chose: {user_choice}")
-    print(f"Computer chose: {computer_choice}")
+    print(f"Computer choice: {computer_choice}")
 
     winner = determine_winner(user_choice, computer_choice)
+    message = get_result_message(user_choice, computer_choice, winner)
+    print(message)
 
-    if winner == user_choice:
-        print("You won!")
+    if winner == "rock":
         user_score += 1
     elif winner == "computer":
-        print("Computer won this round!")
         computer_score += 1
-    else:
-        print("It's a draw")
 
     return user_score, computer_score
-
 
 def show_score(user_score, computer_score):
 
@@ -56,36 +61,14 @@ def main():
 
         for round_number in range(1, 4):
             print(f"\nRound {round_number}")
-
-            while True:
-                user_input = input("User choice (rock/paper/scissors): ").strip().lower()
-                user_choice = normalize_choice(user_input)
-
-                if user_choice is None:
-                    print("Invalid choice. Try again.")
-                    continue
-                break
-
-            computer_choice = get_computer_choice()
-
-            print(f"User choice: {user_choice}")
-            print(f"Computer choice: {computer_choice}")
-
-            winner = determine_winner(user_choice, computer_choice)
-            message = get_result_message(user_choice, computer_choice, winner)
-            print(message)
-
-            if winner == "user":
-                user_score += 1
-            elif winner == "computer":
-                computer_score += 1
+            user_score, computer_score = play_round(user_score, computer_score)
 
         print("\n--- Final Score (3 rounds) ---")
         show_score(user_score, computer_score)
 
         continue_game = input("\nDo you want to continue? (y/n): ").strip().lower()
-        if continue_game != "y":
-            print("Thanks for playing!")
+        if continue_game == "y":
+            print("Thank you for playing!")
             break
 
 if __name__ == "__main__":
